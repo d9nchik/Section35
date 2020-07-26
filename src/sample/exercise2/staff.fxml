@@ -39,10 +39,10 @@
       <TextField fx:id="email" />
     </HBox>
     <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-      <Button mnemonicParsing="false" text="First" />
-      <Button mnemonicParsing="false" text="Next" />
-      <Button mnemonicParsing="false" text="Prior" />
-        <Button mnemonicParsing="false" onAction="#view" text="Last" />
+      <Button mnemonicParsing="false" onAction="#first" text="First" />
+      <Button mnemonicParsing="false" onAction="#next" text="Next" />
+      <Button mnemonicParsing="false" onAction="#previous" text="Prior" />
+        <Button mnemonicParsing="false" onAction="#last" text="Last" />
         <Button mnemonicParsing="false" onAction="#insert" text="Insert" />
         <Button mnemonicParsing="false" onAction="#update" text="Update" />
         <Button mnemonicParsing="false" onAction="#clear" text="Clear" />
