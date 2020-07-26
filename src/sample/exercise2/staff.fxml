@@ -5,15 +5,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="550.0" scaleShape="false" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.exercise2.StaffController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="600.0" scaleShape="false" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.exercise2.StaffController">
     <Text fx:id="message" strokeType="OUTSIDE" strokeWidth="0.0" />
-    <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-        <opaqueInsets>
-            <Insets />
-        </opaqueInsets>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ID" />
-        <TextField fx:id="id" />
-    </HBox>
     <HBox prefHeight="100.0" prefWidth="200.0" spacing="4.0">
         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name" />
         <TextField fx:id="last" />
@@ -23,7 +16,7 @@
         <TextField fx:id="mi" prefColumnCount="1" />
     </HBox>
     <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Address" />
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Street" />
         <TextField fx:id="address" />
     </HBox>
     <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
@@ -31,6 +24,8 @@
         <TextField fx:id="city" />
         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="State" />
         <TextField fx:id="state" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Zip" />
+      <TextField fx:id="zip" prefColumnCount="5" />
     </HBox>
     <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Telephone" />

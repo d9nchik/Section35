@@ -1,6 +1,7 @@
 package sample.exercise2;
 
 import com.sun.rowset.JdbcRowSetImpl;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -10,7 +11,7 @@ import java.sql.*;
 
 public class StaffController {
     @FXML
-    private TextField id, last, first, mi, address, city, state, telephone, email;
+    private TextField last, first, mi, address, city, state, telephone, email, zip;
 
     @FXML
     private Text message;
@@ -22,9 +23,13 @@ public class StaffController {
         new Thread(() -> {
             try {
                 rowSet = new JdbcRowSetImpl();
-                rowSet.setUrl("jdbc:mysql://localhost/javaBookserverTimezone=UTC");
+                rowSet.setUrl("jdbc:mysql://database-2.clvf3bby1e0i.us-east-1.rds.amazonaws.com/" +
+                        "javaBook?serverTimezone=UTC");
                 rowSet.setUsername("scott");
-                rowSet.setPassword("(76%EtjM");
+                rowSet.setPassword("tiger");
+                rowSet.setCommand("SELECT * FROM Address");
+                rowSet.execute();
+                first();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -32,10 +37,10 @@ public class StaffController {
 
 
         new Thread(() -> {//close resource
-            while (id.getScene() == null || id.getScene().getWindow() == null) {
+            while (last.getScene() == null || last.getScene().getWindow() == null) {
                 Thread.yield();
             }
-            id.getScene().getWindow().setOnCloseRequest(event -> {
+            last.getScene().getWindow().setOnCloseRequest(event -> {
                 if (rowSet != null) {
                     try {
                         rowSet.close();
@@ -52,10 +57,10 @@ public class StaffController {
         new Thread(() -> {
             try {
                 rowSet.first();
-                rowSet.execute();
-                view();
+                Platform.runLater(this::view);
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
+                throwables.printStackTrace();
             }
         }).start();
     }
@@ -65,8 +70,7 @@ public class StaffController {
         new Thread(() -> {
             try {
                 rowSet.last();
-                rowSet.execute();
-                view();
+                Platform.runLater(this::view);
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
             }
@@ -78,10 +82,10 @@ public class StaffController {
         new Thread(() -> {
             try {
                 rowSet.previous();
-                rowSet.execute();
-                view();
+                Platform.runLater(this::view);
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
+                throwables.printStackTrace();
             }
         }).start();
     }
@@ -91,24 +95,25 @@ public class StaffController {
         new Thread(() -> {
             try {
                 rowSet.next();
-                rowSet.execute();
-                view();
+                Platform.runLater(this::view);
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
+                throwables.printStackTrace();
             }
         }).start();
     }
 
     private void view() {
         try {
-            last.setText(rowSet.getString(2));
-            first.setText(rowSet.getString(3));
-            mi.setText(rowSet.getString(4));
-            address.setText(rowSet.getString(5));
-            city.setText(rowSet.getString(6));
-            state.setText(rowSet.getString(7));
-            telephone.setText(rowSet.getString(8));
-            email.setText(rowSet.getString(9));
+            last.setText(rowSet.getString("lastname"));
+            first.setText(rowSet.getString("firstname"));
+            mi.setText(rowSet.getString("mi"));
+            address.setText(rowSet.getString("street"));
+            city.setText(rowSet.getString("city"));
+            state.setText(rowSet.getString("state"));
+            telephone.setText(rowSet.getString("telephone"));
+            email.setText(rowSet.getString("email"));
+            zip.setText(rowSet.getString("zip"));
             message.setText("ID found");
         } catch (SQLException throwables) {
             message.setText("ID not found.");
@@ -120,20 +125,23 @@ public class StaffController {
     public void insert() {
         new Thread(() -> {
             try {
-                rowSet.setCommand("INSERT Into Staff VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                rowSet.setString(1, id.getText());//TODO: extract method
-                rowSet.setString(2, last.getText());
-                rowSet.setString(3, first.getText());
-                rowSet.setString(4, mi.getText());
-                rowSet.setString(5, address.getText());
-                rowSet.setString(6, city.getText());
-                rowSet.setString(7, state.getText());
-                rowSet.setString(8, telephone.getText());
-                rowSet.setString(9, email.getText());
-                rowSet.execute();
+                rowSet.moveToInsertRow();
+                //TODO: extract method
+                rowSet.updateString("lastname", last.getText());
+                rowSet.updateString("firstname", first.getText());
+                rowSet.updateString("mi", mi.getText());
+                rowSet.updateString("street", address.getText());
+                rowSet.updateString("city", city.getText());
+                rowSet.updateString("state", state.getText());
+                rowSet.updateString("telephone", telephone.getText());
+                rowSet.updateString("email", email.getText());
+                rowSet.updateString("zip", zip.getText());
+                rowSet.insertRow();
+                rowSet.moveToCurrentRow();
                 message.setText("Successfully inserted");
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
+                throwables.printStackTrace();
             }
         }).start();
     }
@@ -142,21 +150,26 @@ public class StaffController {
     public void update() {
         new Thread(() -> {
             try {//TODO: solve problem of synchronization
-                rowSet.setCommand("UPDATE Staff SET lastName=?, firstName=?, mi=?, address=?," +
-                        "city=?, state=?, telephone=?, email=? WHERE id=?");
-                rowSet.setString(1, id.getText());
-                rowSet.setString(2, last.getText());
-                rowSet.setString(3, first.getText());
-                rowSet.setString(4, mi.getText());
-                rowSet.setString(5, address.getText());
-                rowSet.setString(6, city.getText());
-                rowSet.setString(7, state.getText());
-                rowSet.setString(8, telephone.getText());
-                rowSet.setString(9, email.getText());
+                rowSet.setCommand("Select * FROM  Address Where firstname=? and mi=? and lastname=?");
+                rowSet.setString(1, first.getText());
+                rowSet.setString(2, mi.getText());
+                rowSet.setString(3, last.getText());
                 rowSet.execute();
+                rowSet.next();
+                rowSet.updateString("street", address.getText());
+                rowSet.updateString("city", city.getText());
+                rowSet.updateString("state", state.getText());
+                rowSet.updateString("telephone", telephone.getText());
+                rowSet.updateString("email", email.getText());
+                rowSet.updateString("zip", zip.getText());
+                rowSet.updateRow();
+
                 message.setText("Successfully updated");
+                rowSet.setCommand("Select * From Address");
+                rowSet.execute();
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
+                throwables.printStackTrace();
             }
         }).start();
     }
@@ -165,12 +178,19 @@ public class StaffController {
     public void clear() {
         new Thread(() -> {
             try {
-                rowSet.setCommand("DELETE FROM Staff WHERE id=?");
-                rowSet.setString(1, id.getText());
+                rowSet.setCommand("Select * FROM  Address Where firstname=? and mi=? and lastname=?");
+                rowSet.setString(1, first.getText());
+                rowSet.setString(2, mi.getText());
+                rowSet.setString(3, last.getText());
                 rowSet.execute();
+                rowSet.next();
+                rowSet.deleteRow();
                 message.setText("Cleared successfully");
+                rowSet.setCommand("Select * From Address");
+                rowSet.execute();
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
+                throwables.printStackTrace();
             }
         }).start();
     }
