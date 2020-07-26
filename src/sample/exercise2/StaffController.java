@@ -25,14 +25,7 @@ public class StaffController {
                 rowSet.setUrl("jdbc:mysql://localhost/javaBookserverTimezone=UTC");
                 rowSet.setUsername("scott");
                 rowSet.setPassword("(76%EtjM");
-
-                view = connection.prepareStatement("");
-                insert = connection.prepareStatement("INSERT Into Staff VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                update = connection.prepareStatement("UPDATE Staff SET lastName=?, firstName=?, mi=?, address=?," +
-                        "city=?, state=?, telephone=?, email=? WHERE id=?");
-                clear = connection.prepareStatement("DELETE FROM Staff WHERE id=?");
-
-            } catch (ClassNotFoundException | SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }).start();
