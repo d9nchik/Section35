@@ -60,7 +60,6 @@ public class StaffController {
                 Platform.runLater(this::view);
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
-                throwables.printStackTrace();
             }
         }).start();
     }
@@ -85,7 +84,6 @@ public class StaffController {
                 Platform.runLater(this::view);
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
-                throwables.printStackTrace();
             }
         }).start();
     }
@@ -98,7 +96,6 @@ public class StaffController {
                 Platform.runLater(this::view);
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
-                throwables.printStackTrace();
             }
         }).start();
     }
@@ -117,7 +114,6 @@ public class StaffController {
             message.setText("ID found");
         } catch (SQLException throwables) {
             message.setText("ID not found.");
-            throwables.printStackTrace();
         }
     }
 
@@ -126,7 +122,6 @@ public class StaffController {
         new Thread(() -> {
             try {
                 rowSet.moveToInsertRow();
-                //TODO: extract method
                 rowSet.updateString("lastname", last.getText());
                 rowSet.updateString("firstname", first.getText());
                 rowSet.updateString("mi", mi.getText());
@@ -136,7 +131,6 @@ public class StaffController {
                 message.setText("Successfully inserted");
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
-                throwables.printStackTrace();
             }
         }).start();
     }
@@ -159,7 +153,6 @@ public class StaffController {
                 rowSet.execute();
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
-                throwables.printStackTrace();
             }
         }).start();
     }
@@ -189,7 +182,6 @@ public class StaffController {
                 rowSet.execute();
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
-                throwables.printStackTrace();
             }
         }).start();
     }
