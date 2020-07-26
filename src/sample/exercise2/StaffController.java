@@ -1,9 +1,11 @@
 package sample.exercise2;
 
+import com.sun.rowset.JdbcRowSetImpl;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
+import javax.sql.RowSet;
 import java.sql.*;
 
 public class StaffController {
@@ -13,24 +15,23 @@ public class StaffController {
     @FXML
     private Text message;
 
-    private PreparedStatement view, insert, update, clear;
-    private Connection connection;
+    private RowSet rowSet;
 
     @FXML
     public void initialize() {
         new Thread(() -> {
             try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection("jdbc:mysql://localhost/javaBook" +
-                                "?serverTimezone=UTC", "scott",
-                        "(76%EtjM");
+                rowSet = new JdbcRowSetImpl();
+                rowSet.setUrl("jdbc:mysql://localhost/javaBookserverTimezone=UTC");
+                rowSet.setUsername("scott");
+                rowSet.setPassword("(76%EtjM");
 
-                view = connection.prepareStatement("SELECT * FROM Staff WHERE ? = id;");
-                insert = connection.prepareStatement("INSERT Into Staff (id, lastName, firstName, mi," +
-                        " address, city, state, telephone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                view = connection.prepareStatement("");
+                insert = connection.prepareStatement("INSERT Into Staff VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 update = connection.prepareStatement("UPDATE Staff SET lastName=?, firstName=?, mi=?, address=?," +
-                        "city=?, state=?, telephone=? WHERE id=?");
+                        "city=?, state=?, telephone=?, email=? WHERE id=?");
                 clear = connection.prepareStatement("DELETE FROM Staff WHERE id=?");
+
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
             }
@@ -42,9 +43,9 @@ public class StaffController {
                 Thread.yield();
             }
             id.getScene().getWindow().setOnCloseRequest(event -> {
-                if (connection != null) {
+                if (rowSet != null) {
                     try {
-                        connection.close();
+                        rowSet.close();
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
@@ -54,23 +55,12 @@ public class StaffController {
     }
 
     @FXML
-    public void view() {
+    public void first(){
         new Thread(() -> {
             try {
-                view.setString(1, id.getText());
-                ResultSet resultSet = view.executeQuery();
-                if (resultSet.next()) {
-                    last.setText(resultSet.getString(2));
-                    first.setText(resultSet.getString(3));
-                    mi.setText(resultSet.getString(4));
-                    address.setText(resultSet.getString(5));
-                    city.setText(resultSet.getString(6));
-                    state.setText(resultSet.getString(7));
-                    telephone.setText(resultSet.getString(8));
-                    message.setText("ID found");
-                } else {
-                    message.setText("ID not found.");
-                }
+                rowSet.first();
+                rowSet.execute();
+                view();
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
             }
@@ -78,18 +68,76 @@ public class StaffController {
     }
 
     @FXML
+    public void last(){
+        new Thread(() -> {
+            try {
+                rowSet.last();
+                rowSet.execute();
+                view();
+            } catch (SQLException throwables) {
+                message.setText(throwables.getMessage());
+            }
+        }).start();
+    }
+
+    @FXML
+    public void previous() {
+        new Thread(() -> {
+            try {
+                rowSet.previous();
+                rowSet.execute();
+                view();
+            } catch (SQLException throwables) {
+                message.setText(throwables.getMessage());
+            }
+        }).start();
+    }
+
+    @FXML
+    public void next() {
+        new Thread(() -> {
+            try {
+                rowSet.next();
+                rowSet.execute();
+                view();
+            } catch (SQLException throwables) {
+                message.setText(throwables.getMessage());
+            }
+        }).start();
+    }
+
+    private void view() {
+        try {
+            last.setText(rowSet.getString(2));
+            first.setText(rowSet.getString(3));
+            mi.setText(rowSet.getString(4));
+            address.setText(rowSet.getString(5));
+            city.setText(rowSet.getString(6));
+            state.setText(rowSet.getString(7));
+            telephone.setText(rowSet.getString(8));
+            email.setText(rowSet.getString(9));
+            message.setText("ID found");
+        } catch (SQLException throwables) {
+            message.setText("ID not found.");
+            throwables.printStackTrace();
+        }
+    }
+
+    @FXML
     public void insert() {
         new Thread(() -> {
             try {
-                insert.setString(1, id.getText());
-                insert.setString(2, last.getText());
-                insert.setString(3, first.getText());
-                insert.setString(4, mi.getText());
-                insert.setString(5, address.getText());
-                insert.setString(6, city.getText());
-                insert.setString(7, state.getText());
-                insert.setString(8, telephone.getText());
-                insert.executeUpdate();
+                rowSet.setCommand("INSERT Into Staff VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                rowSet.setString(1, id.getText());//TODO: extract method
+                rowSet.setString(2, last.getText());
+                rowSet.setString(3, first.getText());
+                rowSet.setString(4, mi.getText());
+                rowSet.setString(5, address.getText());
+                rowSet.setString(6, city.getText());
+                rowSet.setString(7, state.getText());
+                rowSet.setString(8, telephone.getText());
+                rowSet.setString(9, email.getText());
+                rowSet.execute();
                 message.setText("Successfully inserted");
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
@@ -100,16 +148,19 @@ public class StaffController {
     @FXML
     public void update() {
         new Thread(() -> {
-            try {
-                update.setString(8, id.getText());
-                update.setString(1, last.getText());
-                update.setString(2, first.getText());
-                update.setString(3, mi.getText());
-                update.setString(4, address.getText());
-                update.setString(5, city.getText());
-                update.setString(6, state.getText());
-                update.setString(7, telephone.getText());
-                update.executeUpdate();
+            try {//TODO: solve problem of synchronization
+                rowSet.setCommand("UPDATE Staff SET lastName=?, firstName=?, mi=?, address=?," +
+                        "city=?, state=?, telephone=?, email=? WHERE id=?");
+                rowSet.setString(1, id.getText());
+                rowSet.setString(2, last.getText());
+                rowSet.setString(3, first.getText());
+                rowSet.setString(4, mi.getText());
+                rowSet.setString(5, address.getText());
+                rowSet.setString(6, city.getText());
+                rowSet.setString(7, state.getText());
+                rowSet.setString(8, telephone.getText());
+                rowSet.setString(9, email.getText());
+                rowSet.execute();
                 message.setText("Successfully updated");
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
@@ -121,8 +172,9 @@ public class StaffController {
     public void clear() {
         new Thread(() -> {
             try {
-                clear.setString(1, id.getText());
-                clear.executeUpdate();
+                rowSet.setCommand("DELETE FROM Staff WHERE id=?");
+                rowSet.setString(1, id.getText());
+                rowSet.execute();
                 message.setText("Cleared successfully");
             } catch (SQLException throwables) {
                 message.setText(throwables.getMessage());
