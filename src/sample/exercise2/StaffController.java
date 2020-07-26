@@ -130,12 +130,7 @@ public class StaffController {
                 rowSet.updateString("lastname", last.getText());
                 rowSet.updateString("firstname", first.getText());
                 rowSet.updateString("mi", mi.getText());
-                rowSet.updateString("street", address.getText());
-                rowSet.updateString("city", city.getText());
-                rowSet.updateString("state", state.getText());
-                rowSet.updateString("telephone", telephone.getText());
-                rowSet.updateString("email", email.getText());
-                rowSet.updateString("zip", zip.getText());
+                updateBio();
                 rowSet.insertRow();
                 rowSet.moveToCurrentRow();
                 message.setText("Successfully inserted");
@@ -156,12 +151,7 @@ public class StaffController {
                 rowSet.setString(3, last.getText());
                 rowSet.execute();
                 rowSet.next();
-                rowSet.updateString("street", address.getText());
-                rowSet.updateString("city", city.getText());
-                rowSet.updateString("state", state.getText());
-                rowSet.updateString("telephone", telephone.getText());
-                rowSet.updateString("email", email.getText());
-                rowSet.updateString("zip", zip.getText());
+                updateBio();
                 rowSet.updateRow();
 
                 message.setText("Successfully updated");
@@ -172,6 +162,15 @@ public class StaffController {
                 throwables.printStackTrace();
             }
         }).start();
+    }
+
+    private void updateBio() throws SQLException {
+        rowSet.updateString("street", address.getText());
+        rowSet.updateString("city", city.getText());
+        rowSet.updateString("state", state.getText());
+        rowSet.updateString("telephone", telephone.getText());
+        rowSet.updateString("email", email.getText());
+        rowSet.updateString("zip", zip.getText());
     }
 
     @FXML
