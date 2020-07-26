@@ -25,8 +25,8 @@ public class StaffController {
                 rowSet = new JdbcRowSetImpl();
                 rowSet.setUrl("jdbc:mysql://database-2.clvf3bby1e0i.us-east-1.rds.amazonaws.com/" +
                         "javaBook?serverTimezone=UTC");
-                rowSet.setUsername("scott");
-                rowSet.setPassword("tiger");
+                rowSet.setUsername("scott");//if you looking for db, you are not in right place.
+                rowSet.setPassword("tiger");//I`ve already killed it to protect data from school hacker
                 rowSet.setCommand("SELECT * FROM Address");
                 rowSet.execute();
                 first();
