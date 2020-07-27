@@ -2,14 +2,12 @@ package sample.exercise3;
 
 import com.sun.rowset.JdbcRowSetImpl;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.util.Callback;
 
 import javax.sql.RowSet;
 import java.sql.ResultSetMetaData;
@@ -41,19 +39,18 @@ public class ShowContentsController {
     public void show() {
         try {
             table.getItems().clear();
-            rowSet.setCommand("SELECT * FROM "+name.getText());
+            rowSet.setCommand("SELECT * FROM " + name.getText());
             rowSet.execute();
 
             ResultSetMetaData rsMetaData = rowSet.getMetaData();
             for (int i = 1; i <= rsMetaData.getColumnCount(); i++) {
-                final int j = i-1;
+                final int j = i - 1;
                 TableColumn<ObservableList<String>, String> col = new TableColumn<>(rsMetaData.getColumnName(i));
                 col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j)));
                 table.getColumns().add(col);
             }
             System.out.println();
 
-            // Iterate through the result and print the student names
             ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
             while (rowSet.next()) {
                 ObservableList<String> row = FXCollections.observableArrayList();
