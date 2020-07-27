@@ -17,7 +17,7 @@ public class StaffApp extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("staff.fxml"));
-        primaryStage.setTitle("Exercise 1");
+        primaryStage.setTitle("Exercise 2");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
