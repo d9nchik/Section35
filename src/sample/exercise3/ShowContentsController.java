@@ -47,9 +47,8 @@ public class ShowContentsController {
             ResultSetMetaData rsMetaData = rowSet.getMetaData();
             for (int i = 1; i <= rsMetaData.getColumnCount(); i++) {
                 final int j = i-1;
-                TableColumn col = new TableColumn(rsMetaData.getColumnName(i));
-                col.setCellValueFactory((Callback<TableColumn.CellDataFeatures<ObservableList, String>,
-                        ObservableValue<String>>) param -> new SimpleStringProperty(param.getValue().get(j).toString()));
+                TableColumn<ObservableList<String>, String> col = new TableColumn<>(rsMetaData.getColumnName(i));
+                col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j)));
                 table.getColumns().add(col);
             }
             System.out.println();
